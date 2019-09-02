@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_carsystem" default="compile.module.carsystem">
+  <dirname property="module.carsystem.basedir" file="${ant.file.module_carsystem}"/>
+  
+  <property name="module.jdk.home.carsystem" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.carsystem" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.carsystem" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.carsystem" value="-encoding UTF-8 -source 10 -target 10 ${compiler.args}"/>
+  
+  <property name="carsystem.output.dir" value="${module.carsystem.basedir}/web/WEB-INF/classes"/>
+  <property name="carsystem.testoutput.dir" value="${module.carsystem.basedir}/web/WEB-INF/classes"/>
+  
+  <path id="carsystem.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="carsystem.module.production.classpath">
+    <path refid="${module.jdk.classpath.carsystem}"/>
+    <fileset dir="${basedir}/web/WEB-INF/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+    <path refid="library.fastjson-1.2.9-javadoc.classpath"/>
+    <path refid="library.tomcat_9.0.21.classpath"/>
+  </path>
+  
+  <path id="carsystem.runtime.production.module.classpath">
+    <pathelement location="${carsystem.output.dir}"/>
+    <fileset dir="${basedir}/web/WEB-INF/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+    <path refid="library.fastjson-1.2.9-javadoc.classpath"/>
+  </path>
+  
+  <path id="carsystem.module.classpath">
+    <path refid="${module.jdk.classpath.carsystem}"/>
+    <pathelement location="${carsystem.output.dir}"/>
+    <fileset dir="${basedir}/web/WEB-INF/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+    <path refid="library.fastjson-1.2.9-javadoc.classpath"/>
+    <path refid="library.tomcat_9.0.21.classpath"/>
+  </path>
+  
+  <path id="carsystem.runtime.module.classpath">
+    <pathelement location="${carsystem.output.dir}"/>
+    <fileset dir="${basedir}/web/WEB-INF/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+    <path refid="library.fastjson-1.2.9-javadoc.classpath"/>
+    <path refid="library.tomcat_9.0.21.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.carsystem">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.carsystem">
+    <patternset refid="excluded.from.module.carsystem"/>
+  </patternset>
+  
+  <path id="carsystem.module.sourcepath">
+    <dirset dir="${module.carsystem.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.carsystem" depends="compile.module.carsystem.production,compile.module.carsystem.tests" description="Compile module CarSystem"/>
+  
+  <target name="compile.module.carsystem.production" depends="register.custom.compilers" description="Compile module CarSystem; production classes">
+    <mkdir dir="${carsystem.output.dir}"/>
+    <javac2 destdir="${carsystem.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.carsystem}/javac">
+      <compilerarg line="${compiler.args.carsystem}"/>
+      <bootclasspath refid="carsystem.module.bootclasspath"/>
+      <classpath refid="carsystem.module.production.classpath"/>
+      <src refid="carsystem.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.carsystem"/>
+    </javac2>
+    
+    <copy todir="${carsystem.output.dir}">
+      <fileset dir="${module.carsystem.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.carsystem.tests" depends="register.custom.compilers,compile.module.carsystem.production" description="compile module CarSystem; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.carsystem" description="cleanup module">
+    <delete dir="${carsystem.output.dir}"/>
+    <delete dir="${carsystem.testoutput.dir}"/>
+  </target>
+</project>
